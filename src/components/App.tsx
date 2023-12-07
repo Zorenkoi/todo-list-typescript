@@ -4,8 +4,8 @@ import Header from "./Header.tsx";
 
 const App: React.FC = () => {
   return (
-    <div className="max-w-2xl mt-10 px-4 mx-auto">
-      <div className="rounded-lg border border-gray-500 overflow-hidden">
+    <div className="sm:px-4 px-0 max-w-2xl sm:mt-10 mt-0  mx-auto ">
+      <div className="rounded-lg sm:border border-gray-300 overflow-hidden">
         <Header />
 
         <div className="p-3">

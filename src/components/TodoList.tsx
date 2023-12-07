@@ -1,16 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useCountTodoContext } from "../context/CountTodoContext";
+
 import Todo from "./Todo";
 import { getTodos } from "../services/todo";
 
 const TodoList: React.FC = () => {
   const [activeTodo, setActiveTodo] = useState<string | null>(null);
+
   //////////////////////////////////////////////////////////////////
 
   const { data, isError, isLoading } = useQuery({
     queryFn: getTodos,
     queryKey: ["todos"],
   });
+
+  const { setCountTodo } = useCountTodoContext();
+
+  useEffect(() => {
+    if (data) setCountTodo(data.length);
+  }, [data]);
+
   ///////////////////////////////////////////////
 
   if (isLoading) {
@@ -36,7 +46,7 @@ const TodoList: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col border border-x-gray-500">
+    <div className="flex flex-col border border-x-gray-300">
       {data &&
         data.map((todo) => {
           return (

@@ -24,6 +24,8 @@ const Todo: React.FC<ITodoProps> = ({
   activeTodo,
   setActiveTodo,
 }) => {
+  //automatic focus on input
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -37,12 +39,16 @@ const Todo: React.FC<ITodoProps> = ({
   }, [activeTodo]);
   ///////////////////////////////////////////////////////////////////
 
+  //change input value
+
   const [inputValue, setInputValue] = useState(title);
 
   const changeInputValue: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setInputValue(e.target.value);
   };
   /////////////////////////////////////////////////////////////////////////////
+
+  // declaration mutate function
 
   const client = useQueryClient();
   const { mutate: deleteTodoMutate } = useMutation({
@@ -68,7 +74,7 @@ const Todo: React.FC<ITodoProps> = ({
   });
   ///////////////////////////////////////////////////////
 
-  const clickSave = () => {
+  const handleSave = () => {
     if (inputValue === "") return;
     if (inputValue === title) {
       setActiveTodo(null);
@@ -78,41 +84,41 @@ const Todo: React.FC<ITodoProps> = ({
     updateTodoMutate({ id, title: inputValue });
     setActiveTodo(null);
   };
-  const clickEdit = () => {
+  const handleEdit = () => {
     setInputValue(title);
     setActiveTodo(id);
   };
-  const clickCancel = () => {
+  const handleCancel = () => {
     setActiveTodo(null);
   };
-  const clickDelete = () => {
+  const handleDelete = () => {
     setActiveTodo(null);
     deleteTodoMutate(id);
   };
-  const clickCheckbox = () => {
+  const handleCheck = () => {
     setActiveTodo(null);
     toggleTodoMutate({ id, completed: !completed });
   };
 
   return (
-    <div className="px-2 py-3 flex justify-start items-center gap-x-2 odd:bg-gray-200 border border-t-gray-500 last:border-b-gray-500">
+    <div className="px-2 py-3 flex justify-start items-start gap-x-2 odd:bg-gray-200 border border-t-gray-300 last:border-b-gray-300">
       {id === activeTodo ? (
         <>
           <input
             type="text"
-            className="w-full h-7 px-2 text-sm border border-gray-400 focus:border-gray-700"
+            className="w-full h-7 px-2 text-sm border border-gray-400 focus:border-gray-500 focus:outline-none focus:border-2"
             value={inputValue}
             onChange={changeInputValue}
             ref={inputRef}
           />
 
           <IconButton
-            onClick={clickCancel}
+            onClick={handleCancel}
             icon={cancelImg}
             tailStyles="bg-gray-400"
           />
           <IconButton
-            onClick={clickSave}
+            onClick={handleSave}
             icon={okImg}
             tailStyles="bg-green-400"
           />
@@ -120,20 +126,20 @@ const Todo: React.FC<ITodoProps> = ({
       ) : (
         <>
           <input
-            className="w-4 h-4  mr-1 cursor-pointer"
+            className="w-4 h-4 mt-1 mr-1 flex-shrink-0 cursor-pointer"
             type="checkbox"
             checked={completed}
-            onChange={clickCheckbox}
+            onChange={handleCheck}
           />
           <h2 className="mr-auto">{title}</h2>
 
           <IconButton
-            onClick={clickDelete}
+            onClick={handleDelete}
             icon={deleteImg}
-            tailStyles="bg-red-400"
+            tailStyles="bg-red-400 ml-3"
           />
           <IconButton
-            onClick={clickEdit}
+            onClick={handleEdit}
             icon={editImg}
             tailStyles="bg-green-400"
           />

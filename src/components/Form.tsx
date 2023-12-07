@@ -3,6 +3,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addTodo } from "../services/todo";
 
 const Form: React.FC = () => {
+  //automatic focus on input
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -10,14 +12,20 @@ const Form: React.FC = () => {
       inputRef.current.focus();
     }
   }, []);
+
   ////////////////////////////////////////////////
+
+  //change input value
 
   const [inputValue, setInputValue] = useState("");
 
   const changeInputValue: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setInputValue(e.target.value);
   };
+
   /////////////////////////////////////////////////////////////////////////////
+
+  //declarate mutate function
 
   const client = useQueryClient();
 
@@ -28,7 +36,10 @@ const Form: React.FC = () => {
       setInputValue("");
     },
   });
+
   ////////////////////////////////////////////////////////
+
+  //event processing
 
   const handleSubmit = () => {
     if (inputValue) {
@@ -49,7 +60,7 @@ const Form: React.FC = () => {
         onChange={changeInputValue}
         onKeyDown={handleKeyDown}
         type="text"
-        className="px-2 w-full rounded-l-md border border-gray-400 focus:outline-none focus:border-gray-700 focus:border-2"
+        className="px-2 w-full rounded-l-md border border-gray-400 focus:outline-none focus:border-gray-500 focus:border-2"
         placeholder="Enter todo here"
         ref={inputRef}
       />
