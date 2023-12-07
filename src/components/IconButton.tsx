@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
-
 interface IIconButtonProps {
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   icon: string;
-  tailStyles: string;
+  tailStyles?: string;
 }
 
 const IconButton: React.FC<IIconButtonProps> = ({
@@ -13,7 +11,7 @@ const IconButton: React.FC<IIconButtonProps> = ({
 }) => {
   return (
     <button
-      className={`w-9 h-7 flex-shrink-0 flex justify-center items-center  rounded ${tailStyles}`}
+      className={`button w-9 h-7 flex-shrink-0 flex justify-center items-center rounded  ${tailStyles}`}
       onClick={onClick}
     >
       <img className="w-5 h-5" src={icon} alt="" />

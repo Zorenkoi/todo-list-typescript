@@ -1,4 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { deleteTodo, toggleTodo, updateTodo } from "../services/todo.ts";
 
 import IconButton from "./IconButton.tsx";
 
@@ -21,24 +24,62 @@ const Todo: React.FC<ITodoProps> = ({
   activeTodo,
   setActiveTodo,
 }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (id === activeTodo && inputRef.current) {
+      const input = inputRef.current;
+
+      input.selectionStart = input.selectionEnd = input.value.length;
+
+      input.focus();
+    }
+  }, [activeTodo]);
+  ///////////////////////////////////////////////////////////////////
+
   const [inputValue, setInputValue] = useState(title);
 
   const changeInputValue: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setInputValue(e.target.value);
   };
+  /////////////////////////////////////////////////////////////////////////////
+
+  const client = useQueryClient();
+  const { mutate: deleteTodoMutate } = useMutation({
+    mutationFn: deleteTodo,
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["todos"] });
+      setInputValue("");
+    },
+  });
+  const { mutate: updateTodoMutate } = useMutation({
+    mutationFn: updateTodo,
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["todos"] });
+      setInputValue("");
+    },
+  });
+  const { mutate: toggleTodoMutate } = useMutation({
+    mutationFn: toggleTodo,
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["todos"] });
+      setInputValue("");
+    },
+  });
+  ///////////////////////////////////////////////////////
 
   const clickSave = () => {
-    if (inputValue !== "") {
-      const updatedTodo = {
-        id,
-        title: inputValue,
-        completed,
-      };
-
+    if (inputValue === "") return;
+    if (inputValue === title) {
       setActiveTodo(null);
+      return;
     }
+
+    updateTodoMutate({ id, title: inputValue });
+    setActiveTodo(null);
   };
   const clickEdit = () => {
+    setInputValue(title);
     setActiveTodo(id);
   };
   const clickCancel = () => {
@@ -46,9 +87,11 @@ const Todo: React.FC<ITodoProps> = ({
   };
   const clickDelete = () => {
     setActiveTodo(null);
+    deleteTodoMutate(id);
   };
   const clickCheckbox = () => {
     setActiveTodo(null);
+    toggleTodoMutate({ id, completed: !completed });
   };
 
   return (
@@ -60,6 +103,7 @@ const Todo: React.FC<ITodoProps> = ({
             className="w-full h-7 px-2 text-sm border border-gray-400 focus:border-gray-700"
             value={inputValue}
             onChange={changeInputValue}
+            ref={inputRef}
           />
 
           <IconButton
@@ -76,7 +120,7 @@ const Todo: React.FC<ITodoProps> = ({
       ) : (
         <>
           <input
-            className="w-4 h-4  mr-1 "
+            className="w-4 h-4  mr-1 cursor-pointer"
             type="checkbox"
             checked={completed}
             onChange={clickCheckbox}

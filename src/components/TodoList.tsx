@@ -1,46 +1,25 @@
-import { useState, useContext, useEffect } from "react";
-
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Todo from "./Todo";
-
-interface ITodoItem {
-  id: string;
-  title: string;
-  completed: boolean;
-}
-
-const data: ITodoItem[] = [
-  {
-    id: "lput3rm4",
-    title: "new todo",
-    completed: true,
-  },
-  {
-    id: "lputg2k2",
-    title: "hui",
-    completed: false,
-  },
-  {
-    id: "lputg6e2",
-    title: "zalupa",
-    completed: false,
-  },
-  {
-    id: "lputg6e1",
-    title: "zalupa",
-    completed: false,
-  },
-];
+import { getTodos } from "../services/todo";
 
 const TodoList: React.FC = () => {
   const [activeTodo, setActiveTodo] = useState<string | null>(null);
+  //////////////////////////////////////////////////////////////////
 
-  if (false) {
+  const { data, isError, isLoading } = useQuery({
+    queryFn: getTodos,
+    queryKey: ["todos"],
+  });
+  ///////////////////////////////////////////////
+
+  if (isLoading) {
     return (
       <h2 className="py-5 block text-center font-bold text-lg">Loading...</h2>
     );
   }
 
-  if (false) {
+  if (isError) {
     return (
       <h2 className="py-5 block text-center font-bold text-lg text-red-500">
         Error
@@ -48,7 +27,7 @@ const TodoList: React.FC = () => {
     );
   }
 
-  if (data.length === 0) {
+  if (data && data.length === 0) {
     return (
       <h2 className="py-5 block text-center font-bold text-lg">
         There is no todos

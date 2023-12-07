@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.button {
+  position: relative;
+  transition: opacity 0.3s, top 0.3s;
+}
+
+.button:hover {
+  opacity: 0.7;
+}
+.button:active {
+  top: 2px;
+}
+
+.form-button {
+  position: relative;
+  transition: opacity 0.3s;
+}
+
+.form-button:hover {
+  opacity: 0.7;
+}
